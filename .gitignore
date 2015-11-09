@@ -1,0 +1,18 @@
+# Toolboxes provided by G.Peyre
+
+**/toolbox_general/
+**/toolbox_signal/
+
+
+*/*.asv
+
+**/*.fig
+**/*.png
+**/*.aux
+**/*.log
+**/*.nav
+**/*.out
+**/*.snm
+**/*.synctex.gz
+**/*.toc
+*/*.docx

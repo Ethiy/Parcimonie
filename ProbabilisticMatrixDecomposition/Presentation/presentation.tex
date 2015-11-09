@@ -1,0 +1,184 @@
+\documentclass[english]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,MnSymbol,amsbsy}
+\usepackage{graphicx}
+\usetheme{Berlin}
+\usepackage{float}
+
+
+\title{Finding structure with randomness - Probabilistic Algorithms for Constructing Approximate Matrix Decomposition}
+\author{Oussama \textsc{Ennafii}}
+\institute[ENS]{
+\structure{
+Ecole Normale Superieur de Cachan}
+}
+
+\begin{document}
+\frame{\maketitle}
+
+\frame{
+\frametitle{Problematic:}
+\begin{block}{Issue to solve:}
+Traditional low rank approximation algorithms such as the QR decomposition and SVD  are not addapted to very huge or inaccurate matrices.
+\end{block}
+\ \\
+We need to find a framework to apply to these kinds of reccurent problems.
+}
+
+\frame{
+\frametitle{Two stage approximation framework:}
+\begin{block}{Two stage approximation framework}
+\begin{itemize}
+\item{Stage A}: Compute an orthornormal low rank basis $\bold{Q}$ such that, \\
+$\bold{A} \approx \bold{Q}\bold{Q}^* \bold{A}$
+\item{Stage B}: Compute the matrix factorisation on $\bold{B} = \bold{Q}^T
+\bold{A}$
+\end{itemize}
+\end{block}
+
+The randomization, in Stage A, permits to span the range of $A$ very efficiently.
+}
+
+\frame{
+\frametitle{Problem formulation:}
+\begin{block}{The fixed precision problem}
+Given $\bold{A}$ and $\epsilon$, find $\bold{Q}$ s.t.
+$$\lVert \bold{A} - \bold{Q}\bold{Q}^T \bold{A} \lVert \leq \epsilon$$
+\end{block}
+\begin{block}{The fixed rank problem}
+Given $\bold{A}$ and $k$, seek $\bold{B}$ s. t.
+$$\lVert \bold{A} - \bold{Q}\bold{Q}^T \bold{A} \lVert \approx \min_{rank(\bold{X}) \leq
+k} \lVert \bold{A} - \bold{X} \lVert$$
+\end{block}
+}
+
+\frame{
+\frametitle{Stage A:}
+\framesubtitle{The proto-algorithm:}
+\begin{block}{The proto-algorithm}
+1. Draw an n x (k + p) random matrix $\bold{O}$ \\
+2. Form the matrix $\bold{Y} = \bold{A} \bold{O}$ \\
+3. Construct a matrix $\bold{Q}$ whose columns form an othonormal basis for the
+range of $\bold{Y}$ \\
+\end{block}}
+
+\frame{
+\frametitle{Stage A:}
+\framesubtitle{Randomized Range Finder:}
+\begin{block}{Stage A - Randomized Range Finder}
+1. Draw an n x l standard Gaussian matrix $\bold{O}$ \\
+2. Form the m x l matrix $\bold{Y} = \bold{A} \bold{O}$ \\
+3. Construct the m x l matrix $\bold{Q}$ using the QR factorization of:
+$\bold{Y} = \bold{QR}$
+\end{block}
+
+The number of flops necessary for this algorithm is:
+$$lnT_{rand}+lT_{mult}+l^2m$$
+}
+
+\frame{
+\frametitle{Stage A:}
+\framesubtitle{Randomized Power Iteration:}
+\begin{block}{Randomized Power Iteration:}
+1. Draw an n x l standard Gaussian matrix $\bold{O}$ \\
+2. For the m x l matrix $\bold{Y} = (\bold{AA}^*)^q \bold{A} \bold{O}$ via alternative
+application of $\bold{A}$ and $\bold{A}^q$ \\
+3. Construct the m x l matrix $\bold{Q}$ using the QR decomposition:
+$\bold{Y} = \bold{QR}$
+\end{block}
+}
+
+\frame{
+\frametitle{Stage A:}
+\framesubtitle{Fast Randomized Range Finder:}
+\begin{block}{Fast Randomized Range Finder}
+1. Draw an n x l SRFT matrix $\bold{O}$ \\
+2. Form the m x l matrix $\bold{Y} = \bold{A} \bold{O}$ \\
+3. Construct the m x l matrix $\bold{Q}$ using the QR factorization of:
+$\bold{Y} = \bold{QR}$
+\end{block}
+An SFRT is :
+$$ \bold{O} = \sqrt{\frac{n}{l}}\bold{DFR}$$
+
+where:
+ $\bold{D}$ is a n x n diagonal matrix whose entries are random variables,
+distributed on the complex unit circle
+ $\bold{F}$ is the n x n unitary
+discrete Fourier transform and 
+ $\bold{R}$ is an n x l matrix whose $l$ column
+are drawn from the n x n identity matrix.
+}
+
+\frame{
+\frametitle{Stage B:}
+\framesubtitle{Direct SVD:}
+\begin{block}{Direct SVD}
+1. Form the matrix $\bold{B} = \bold{Q}^* \bold{A}$ \\
+2. Compute the SVD of the matrix $ \bold{B} = \tilde{\bold{U}} \bold{S} \bold{V}^*$ \\
+3. Form the orthonormal matrix $\bold{U} = \bold{Q} \tilde{\bold{U}}$ \\
+\end{block}
+}
+
+\frame{
+\frametitle{Theory:}
+\framesubtitle{Proto-Algorithm Error bound:}
+We use the notations:
+$$A=U \begin{pmatrix}
+\Sigma_1 & \\
+ & \Sigma_2
+\end{pmatrix}
+\begin{pmatrix}
+V_1^*\\
+V_2^*
+\end{pmatrix}
+$$
+and
+$$\Omega_1=V_1^*\Omega\ and \  \Omega_2=V_2^*\Omega$$
+
+\begin{block}{Theorem:}
+Assuming that $\Omega_1$ has full row rank, 
+
+\begin{equation}
+||(I-P_Y)A||^2\leq ||\Sigma_2||^2+||\Sigma_2\Omega_2\Omega_1^{\dagger}||
+\end{equation}
+\end{block}
+
+}
+
+\frame{
+\frametitle{Theory:}
+\framesubtitle{Error bound on the randomized range finder:}
+\begin{block}{Theorem:}
+We keep the same notations as before. $k,p\geq 2$ and $k+p\leq min(m,n)$:
+\begin{equation}
+\mathbb{E}||(I-P_Y)A||_F\leq (1+\frac{k}{p-1})^{1/2} (\sum_{j>k} \sigma_j^2)^{1/2}
+\end{equation}
+
+and for the spectral norm :
+
+\begin{equation}
+\mathbb{E}||(I-P_Y)A||\leq (1+\frac{k}{p-1})\sigma_{k+1}+ \frac{e\sqrt{k+p}}{p} (\sum_{j>k} \sigma_j^2)^{1/2}
+\end{equation}
+\end{block}
+
+}
+
+\frame{
+\frametitle{Numericals:}
+\framesubtitle{Image processing application:}
+\begin{figure}[h]
+   \includegraphics[scale=.25]{eigenvalue.png}
+\end{figure}
+ - The random range finder(blue) runs for 4.5 sec.\\
+ - The random power iteration(green) runs for 9.8 sec.\\
+ - The fast random range finder(red) runs for 11 sec.
+
+}
+
+\frame{
+\frametitle{Conclusion:}
+}
+
+
+\end{document}
